@@ -28,6 +28,11 @@ done
 get_tests_cmd="cd $FSTESTS_DIR; sudo ./check -n $TESTLIST"
 TESTS=$(ssh ${VMS[0]} $get_tests_cmd | grep -E '[a-zA-Z]+/[0-9]+$')
 
+check_vm() {
+      dbg "try $vm"
+      ssh $vm 'echo hi > /dev/null' || return $?
+}
+
 for t in $TESTS
 do
   dbg "Assigning test: $t"
@@ -36,7 +41,7 @@ do
   do
     for vm in ${VMS[@]}
     do
-      dbg "try $vm"
+      check_vm $vm || continue;
       assign_cmd="echo $t > $vm-fifo"
       flock -n "$vm-lock" -c "$assign_cmd"
       if [ $? -eq 0 ]
