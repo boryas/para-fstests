@@ -11,4 +11,4 @@ dbg "ssh-work.sh cmd: $cmd"
 
 res=$(ssh $vm $cmd)
 
-log "$vm: $res"
+log "$vm: $tst: $res"
